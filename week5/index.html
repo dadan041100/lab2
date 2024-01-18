@@ -3,7 +3,7 @@
 <style>
 body {
   background-color: lightblue;
-  background-image: url("gemini.jpg");
+  background-image: url("cloud.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
@@ -12,8 +12,8 @@ body {
   
 }
 video {
-	width: 100%;
-	height: auto;
+	width: 50%;
+	height: 50%;
 }
 
 h1 {
@@ -31,9 +31,9 @@ h3 {
 	text-align: right;
 
 p {
-  font-family: comic-sans;
+  font-family: "comic-sans";
   font-size: 25px;
-  text-align: center;
+  text-align: center center;
   color: #ffffff;
   
 }
@@ -44,13 +44,33 @@ p {
 <h3>I play VALORANT most of the time</h3>
 <img style="float:right;" src="valorant.png" alt="Valorant" width="100">
 
-<p style="color:white;">Definitely not a Killjoy Main</p>
-<p style="color:white;">I am a big fan of Lee Ji-Eun (IU)</p>
-<p style="color:white;">I am also a big fan of AESPA</p>
+<p style="color:white;" onmouseover="increaseFontSize()", onmouseout="restoreFontSize()">Definitely not a Killjoy Main</p>
+<p style="color:white;" onmouseover="increaseFontSize()", onmouseout="restoreFontSize()">I am a big fan of Lee Ji-Eun (IU)</p>
+<p style="color:white;" onmouseover="increaseFontSize()", onmouseout="restoreFontSize()">I am also a big fan of AESPA</p>
 
 <video width="300px" height="300px" controls="controls">
         <source src="drama.mp4" type="video/mp4"/>
-       
+ 
+ <script>
+ 
+window.onload = function() {
+    alert("Welcome to Daniel Ramolete's Website!");
+};
+ 
+var originalFontSize;
+ 
+function increaseFontSize() {
+    var paragraph = document.querySelector('p');
+    originalFontSize = window.getComputedStyle(paragraph, null).getPropertyValue('font-size');
+    paragraph.style.fontSize = "30px";
+}
+ 
+function restoreFontSize() {
+    var paragraph = document.querySelector('p');
+    paragraph.style.fontSize = originalFontSize;
+}
+ 
+</script>
 </video>
 </body>
 </html>
