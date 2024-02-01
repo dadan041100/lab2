@@ -1,154 +1,11 @@
-<h2>PHP Form Example</h2>
-
-<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-    Name: <input type="text" name="name">
-    <input type="submit" name="submit" value="Submit">
-</form>
-
 <?php
+date_default_timezone_set('Asia/Singapore'); // Set timezone to GMT+8
 
- echo "<p>Server Time: " . date("Y-m-d H:i:s") . "</p>";
-	if (isset($_POST["user_message"])) {
-    $userMessage = $_POST["user_message"];
-    echo "<p>Your Message: $userMessage</p>";
-	} else {
-    echo "<p>No user message provided.</p>";
-	}
-	
-    
- 
-	if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Check if name field is not empty
-    if (!empty($_POST["name"])) {
-        $name = $_POST["name"];
-        echo "<p>Hello, $name! Thank you for submitting the form.</p>";
-    } else {
-        echo "<p>Please enter your name.</p>";
-    }
-}
-?>
+$currentDate = date('Y-m-d'); // Get current date
+$currentTime = date('H:i:s'); // Get current time
 
-<h2>File Upload Example</h2>
-
-<?php
-// Check if form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["file"])) {
-    $target_dir = "uploads/";
-    $target_file = $target_dir . basename($_FILES["file"]["name"]);
-    $uploadOk = 1;
-    $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
-
-    // Check if file already exists
-    if (file_exists($target_file)) {
-        echo "Sorry, file already exists.";
-        $uploadOk = 0;
-    }
-
-    // Check file size
-    if ($_FILES["file"]["size"] > 500000) {
-        echo "Sorry, your file is too large.";
-        $uploadOk = 0;
-    }
-
-    // Allow certain file formats
-    if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-    && $imageFileType != "gif" ) {
-        echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-        $uploadOk = 0;
-    }
-
-    // Check if $uploadOk is set to 0 by an error
-    if ($uploadOk == 0) {
-        echo "Sorry, your file was not uploaded.";
-    } else {
-        if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
-            echo "The file ". htmlspecialchars( basename( $_FILES["file"]["name"])). " has been uploaded.";
-        } else {
-            echo "Sorry, there was an error uploading your file.";
-        }
-    }
-}
-?>
-
-<form method="post" enctype="multipart/form-data">
-    Select image to upload:
-    <input type="file" name="file" id="file">
-    <input type="submit" value="Upload Image" name="submit">
-</form>
-
-<h4>Contact Us!</h4>
-
-<?php
-// Define variables and set to empty values
-$name = $email = $message = "";
-$nameErr = $emailErr = $messageErr = "";
-$successMessage = "";
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Validate name
-    if (empty($_POST["name"])) {
-        $nameErr = "Name is required";
-    } else {
-        $name = test_input($_POST["name"]);
-    }
-
-    // Validate email
-    if (empty($_POST["email"])) {
-        $emailErr = "Email is required";
-    } else {
-        $email = test_input($_POST["email"]);
-        // Check if email is valid
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $emailErr = "Invalid email format";
-        }
-    }
-
-    // Validate message
-    if (empty($_POST["message"])) {
-        $messageErr = "Message is required";
-    } else {
-        $message = test_input($_POST["message"]);
-    }
-
-    // If no errors, send email
-    if (empty($nameErr) && empty($emailErr) && empty($messageErr)) {
-        $to = "your_email@example.com";
-        $subject = "Contact Form Submission";
-        $body = "Name: $name\nEmail: $email\nMessage: $message";
-        $headers = "From: $email";
-
-        if (mail($to, $subject, $body, $headers)) {
-            $successMessage = "Your message has been sent successfully!";
-        } else {
-            $successMessage = "Oops! Something went wrong.";
-        }
-    }
-}
-
-// Function to sanitize input data
-function test_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-}
-?>
-
-<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-    Name: <input type="text" name="name">
-    <span class="error">* <?php echo $nameErr;?></span>
-    <br><br>
-    Email: <input type="text" name="email">
-    <span class="error">* <?php echo $emailErr;?></span>
-    <br><br>
-    Message: <textarea name="message" rows="5" cols="40"></textarea>
-    <span class="error">* <?php echo $messageErr;?></span>
-    <br><br>
-    <input type="submit" name="submit" value="Submit">
-</form>
-
-<?php
-echo "<p class='success'>$successMessage</p>";
+echo "Current Date: " . $currentDate . "<br>";
+echo "Current Time (GMT+8): " . $currentTime;
 ?>
 
 <h5>Login Page</h5>
@@ -162,7 +19,7 @@ $valid_username = "user";
 $valid_password = "password";
 
 // Check if form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+	if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["username"]) && isset($_POST["password"])) {
     $username = $_POST["username"];
     $password = $_POST["password"];
 
@@ -191,7 +48,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -214,7 +70,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background-position: center center;
             background-attachment: fixed;
             overflow: auto;
-            
         }
 
         header {
@@ -223,14 +78,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             color: #008CBA;            
             z-index: 1;
             position: relative;
-            
         }
 
         h1,
         h2,
         h3,
-		h4,
-		h5 {
+        h4,
+        h5 {
             color: #008CBA;
             margin: 5px 0;
         }
@@ -250,7 +104,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             object-fit: cover;
             border: 5px solid #008CBA;
             margin-bottom: 10px;
-			align-self; center;
         }
 
         video {
@@ -260,7 +113,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             margin: 20px 0;
-			align-self:center;
         }
 
         .social-buttons {
@@ -268,7 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             gap: 10px;
             margin-top: 20px;
             align-items: center;
-			justify-content: center;
+            justify-content: center;
         }
 
         .social-button {
@@ -338,7 +190,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background-color: #005580;
         }
 
-        
         .action-button {
             background-color: #008CBA;
             color: white;
@@ -354,9 +205,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .action-button:hover {
             background-color: #005580;
         }
+
+        .error {
+            color: red;
+        }
+
+        .success {
+            color: green;
+        }
+
+        form {
+            width: 60%;
+            margin-top: 20px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        form input[type="text"],
+        form input[type="password"],
+        form textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        form input[type="submit"] {
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        form input[type="submit"]:hover {
+            background-color: #005580;
+        }
     </style>
 </head>
-
 <body>
     <header>
         <h1>Welcome to Daniel Ramolete's Website!</h1>
@@ -365,12 +259,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </header>
 
     <main>
-        <p onmouseover="increaseFontSize(this)" onmouseout="restoreFontSize(this)">Definitely not a Killjoy Main</p>
-        <p onmouseover="increaseFontSize(this)" onmouseout="restoreFontSize(this)">I am a big fan of Lee Ji-Eun
-            (IU)</p>
-        <p onmouseover="increaseFontSize(this)" onmouseout="restoreFontSize(this)">I am also a big fan of AESPA</p>
+        <p>I'm definitely not a Killjoy Main</p>
+        <p>I am a big fan of Lee Ji-Eun (IU)</p>
+        <p>I am also a big fan of AESPA</p>
 
-        <video id="myVideo" controls>
+        <video controls>
             <source src="drama.mp4" type="video/mp4" />
         </video>
 
@@ -516,8 +409,132 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
     </script>
+	
+<h2>PHP Form Example</h2>
 
+<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+    Name: <input type="text" name="name">
+    <input type="submit" name="submit" value="Submit">
+</form>
 
+<h2>File Upload Example</h2>
+
+<?php
+// Check if form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["file"])) {
+    $target_dir = "uploads/";
+    $target_file = $target_dir . basename($_FILES["file"]["name"]);
+    $uploadOk = 1;
+    $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+
+    // Check if file already exists
+    if (file_exists($target_file)) {
+        echo "Sorry, file already exists.";
+        $uploadOk = 0;
+    }
+
+    // Check file size
+    if ($_FILES["file"]["size"] > 500000) {
+        echo "Sorry, your file is too large.";
+        $uploadOk = 0;
+    }
+
+    // Allow certain file formats
+    if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+    && $imageFileType != "gif" ) {
+        echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+        $uploadOk = 0;
+    }
+
+    // Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0) {
+        echo "Sorry, your file was not uploaded.";
+    } else {
+        if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
+            echo "The file ". htmlspecialchars( basename( $_FILES["file"]["name"])). " has been uploaded.";
+        } else {
+            echo "Sorry, there was an error uploading your file.";
+        }
+    }
+}
+?>
+
+<form method="post" enctype="multipart/form-data">
+    Select image to upload:
+    <input type="file" name="file" id="file">
+    <input type="submit" value="Upload Image" name="submit">
+</form>
+
+<h4>Contact Us!</h4>
+
+<?php
+// Define variables and set to empty values
+$name = $email = $message = "";
+$nameErr = $emailErr = $messageErr = "";
+$successMessage = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Validate name
+    if (empty($_POST["name"])) {
+        $nameErr = "Name is required";
+    } else {
+        $name = test_input($_POST["name"]);
+    }
+
+    // Validate email
+    if (empty($_POST["email"])) {
+        $emailErr = "Email is required";
+    } else {
+        $email = test_input($_POST["email"]);
+        // Check if email is valid
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $emailErr = "Invalid email format";
+        }
+    }
+
+    // Validate message
+    if (empty($_POST["message"])) {
+        $messageErr = "Message is required";
+    } else {
+        $message = test_input($_POST["message"]);
+    }
+
+    // If no errors, send email
+    if (empty($nameErr) && empty($emailErr) && empty($messageErr)) {
+        $to = "your_email@example.com";
+        $subject = "Contact Form Submission";
+        $body = "Name: $name\nEmail: $email\nMessage: $message";
+        $headers = "From: $email";
+
+        if (mail($to, $subject, $body, $headers)) {
+            $successMessage = "Your message has been sent successfully!";
+        } else {
+            $successMessage = "Oops! Something went wrong.";
+        }
+    }
+}
+
+// Function to sanitize input data
+function test_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+?>
+
+<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+    Name: <input type="text" name="name">
+    <span class="error">* <?php echo $nameErr;?></span>
+    <br><br>
+    Email: <input type="text" name="email">
+    <span class="error">* <?php echo $emailErr;?></span>
+    <br><br>
+    Message: <textarea name="message" rows="5" cols="40"></textarea>
+    <span class="error">* <?php echo $messageErr;?></span>
+    <br><br>
+    <input type="submit" name="submit" value="Submit">
+</form>
 </body>
 
 </html>
