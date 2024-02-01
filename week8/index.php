@@ -1,3 +1,194 @@
+<h2>PHP Form Example</h2>
+
+<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+    Name: <input type="text" name="name">
+    <input type="submit" name="submit" value="Submit">
+</form>
+
+<?php
+
+ echo "<p>Server Time: " . date("Y-m-d H:i:s") . "</p>";
+	if (isset($_POST["user_message"])) {
+    $userMessage = $_POST["user_message"];
+    echo "<p>Your Message: $userMessage</p>";
+	} else {
+    echo "<p>No user message provided.</p>";
+	}
+	
+    
+ 
+	if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Check if name field is not empty
+    if (!empty($_POST["name"])) {
+        $name = $_POST["name"];
+        echo "<p>Hello, $name! Thank you for submitting the form.</p>";
+    } else {
+        echo "<p>Please enter your name.</p>";
+    }
+}
+?>
+
+<h2>File Upload Example</h2>
+
+<?php
+// Check if form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["file"])) {
+    $target_dir = "uploads/";
+    $target_file = $target_dir . basename($_FILES["file"]["name"]);
+    $uploadOk = 1;
+    $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+
+    // Check if file already exists
+    if (file_exists($target_file)) {
+        echo "Sorry, file already exists.";
+        $uploadOk = 0;
+    }
+
+    // Check file size
+    if ($_FILES["file"]["size"] > 500000) {
+        echo "Sorry, your file is too large.";
+        $uploadOk = 0;
+    }
+
+    // Allow certain file formats
+    if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+    && $imageFileType != "gif" ) {
+        echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+        $uploadOk = 0;
+    }
+
+    // Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0) {
+        echo "Sorry, your file was not uploaded.";
+    } else {
+        if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
+            echo "The file ". htmlspecialchars( basename( $_FILES["file"]["name"])). " has been uploaded.";
+        } else {
+            echo "Sorry, there was an error uploading your file.";
+        }
+    }
+}
+?>
+
+<form method="post" enctype="multipart/form-data">
+    Select image to upload:
+    <input type="file" name="file" id="file">
+    <input type="submit" value="Upload Image" name="submit">
+</form>
+
+<h4>Contact Us!</h4>
+
+<?php
+// Define variables and set to empty values
+$name = $email = $message = "";
+$nameErr = $emailErr = $messageErr = "";
+$successMessage = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Validate name
+    if (empty($_POST["name"])) {
+        $nameErr = "Name is required";
+    } else {
+        $name = test_input($_POST["name"]);
+    }
+
+    // Validate email
+    if (empty($_POST["email"])) {
+        $emailErr = "Email is required";
+    } else {
+        $email = test_input($_POST["email"]);
+        // Check if email is valid
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $emailErr = "Invalid email format";
+        }
+    }
+
+    // Validate message
+    if (empty($_POST["message"])) {
+        $messageErr = "Message is required";
+    } else {
+        $message = test_input($_POST["message"]);
+    }
+
+    // If no errors, send email
+    if (empty($nameErr) && empty($emailErr) && empty($messageErr)) {
+        $to = "your_email@example.com";
+        $subject = "Contact Form Submission";
+        $body = "Name: $name\nEmail: $email\nMessage: $message";
+        $headers = "From: $email";
+
+        if (mail($to, $subject, $body, $headers)) {
+            $successMessage = "Your message has been sent successfully!";
+        } else {
+            $successMessage = "Oops! Something went wrong.";
+        }
+    }
+}
+
+// Function to sanitize input data
+function test_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+?>
+
+<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+    Name: <input type="text" name="name">
+    <span class="error">* <?php echo $nameErr;?></span>
+    <br><br>
+    Email: <input type="text" name="email">
+    <span class="error">* <?php echo $emailErr;?></span>
+    <br><br>
+    Message: <textarea name="message" rows="5" cols="40"></textarea>
+    <span class="error">* <?php echo $messageErr;?></span>
+    <br><br>
+    <input type="submit" name="submit" value="Submit">
+</form>
+
+<?php
+echo "<p class='success'>$successMessage</p>";
+?>
+
+<h5>Login Page</h5>
+
+<?php
+// Start session
+session_start();
+
+// Define valid username and password
+$valid_username = "user";
+$valid_password = "password";
+
+// Check if form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+
+    // Check if username and password are valid
+    if ($username === $valid_username && $password === $valid_password) {
+        // Authentication successful, set session variable
+        $_SESSION["loggedin"] = true;
+        $_SESSION["username"] = $username;
+
+        // Redirect to home page or dashboard
+        header("Location: home.php");
+        exit;
+    } else {
+        echo "<p>Invalid username or password. Please try again.</p>";
+    }
+}
+?>
+
+<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+    <label for="username">Username:</label>
+    <input type="text" name="username" id="username" required><br><br>
+    <label for="password">Password:</label>
+    <input type="password" name="password" id="password" required><br><br>
+    <input type="submit" value="Login">
+</form>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -38,7 +229,8 @@
         h1,
         h2,
         h3,
-		h4 {
+		h4,
+		h5 {
             color: #008CBA;
             margin: 5px 0;
         }
@@ -325,153 +517,7 @@
         }
     </script>
 
-<h2>PHP Form Example</h2>
 
-<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-    Name: <input type="text" name="name">
-    <input type="submit" name="submit" value="Submit">
-</form>
-
-<?php
-
- echo "<p>Server Time: " . date("Y-m-d H:i:s") . "</p>";
- 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {        
-        $userMessage = $_POST["user_message"];        
-        echo "<p>Your Message: $userMessage</p>";    
-    }
- 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Check if name field is not empty
-    if (!empty($_POST["name"])) {
-        $name = $_POST["name"];
-        echo "<p>Hello, $name! Thank you for submitting the form.</p>";
-    } else {
-        echo "<p>Please enter your name.</p>";
-    }
-}
-?>
-
-<h2>File Upload Example</h2>
-
-<?php
-// Check if form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["file"])) {
-    $target_dir = "uploads/";
-    $target_file = $target_dir . basename($_FILES["file"]["name"]);
-    $uploadOk = 1;
-    $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
-
-    // Check if file already exists
-    if (file_exists($target_file)) {
-        echo "Sorry, file already exists.";
-        $uploadOk = 0;
-    }
-
-    // Check file size
-    if ($_FILES["file"]["size"] > 500000) {
-        echo "Sorry, your file is too large.";
-        $uploadOk = 0;
-    }
-
-    // Allow certain file formats
-    if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-    && $imageFileType != "gif" ) {
-        echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-        $uploadOk = 0;
-    }
-
-    // Check if $uploadOk is set to 0 by an error
-    if ($uploadOk == 0) {
-        echo "Sorry, your file was not uploaded.";
-    } else {
-        if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
-            echo "The file ". htmlspecialchars( basename( $_FILES["file"]["name"])). " has been uploaded.";
-        } else {
-            echo "Sorry, there was an error uploading your file.";
-        }
-    }
-}
-?>
-
-<form method="post" enctype="multipart/form-data">
-    Select image to upload:
-    <input type="file" name="file" id="file">
-    <input type="submit" value="Upload Image" name="submit">
-</form>
-<h4>Contact Us!</h4>
-<?php
-// Define variables and set to empty values
-$name = $email = $message = "";
-$nameErr = $emailErr = $messageErr = "";
-$successMessage = "";
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Validate name
-    if (empty($_POST["name"])) {
-        $nameErr = "Name is required";
-    } else {
-        $name = test_input($_POST["name"]);
-    }
-
-    // Validate email
-    if (empty($_POST["email"])) {
-        $emailErr = "Email is required";
-    } else {
-        $email = test_input($_POST["email"]);
-        // Check if email is valid
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $emailErr = "Invalid email format";
-        }
-    }
-
-    // Validate message
-    if (empty($_POST["message"])) {
-        $messageErr = "Message is required";
-    } else {
-        $message = test_input($_POST["message"]);
-    }
-
-    // If no errors, send email
-    if (empty($nameErr) && empty($emailErr) && empty($messageErr)) {
-        $to = "your_email@example.com";
-        $subject = "Contact Form Submission";
-        $body = "Name: $name\nEmail: $email\nMessage: $message";
-        $headers = "From: $email";
-
-        if (mail($to, $subject, $body, $headers)) {
-            $successMessage = "Your message has been sent successfully!";
-        } else {
-            $successMessage = "Oops! Something went wrong.";
-        }
-    }
-}
-
-// Function to sanitize input data
-function test_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-}
-?>
-
-<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-    Name: <input type="text" name="name">
-    <span class="error">* <?php echo $nameErr;?></span>
-    <br><br>
-    Email: <input type="text" name="email">
-    <span class="error">* <?php echo $emailErr;?></span>
-    <br><br>
-    Message: <textarea name="message" rows="5" cols="40"></textarea>
-    <span class="error">* <?php echo $messageErr;?></span>
-    <br><br>
-    <input type="submit" name="submit" value="Submit">
-</form>
-
-<?php
-echo "<p class='success'>$successMessage</p>";
-?>
 </body>
 
 </html>
