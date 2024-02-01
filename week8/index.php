@@ -37,7 +37,8 @@
 
         h1,
         h2,
-        h3 {
+        h3,
+		h4 {
             color: #008CBA;
             margin: 5px 0;
         }
@@ -398,6 +399,79 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["file"])) {
     <input type="file" name="file" id="file">
     <input type="submit" value="Upload Image" name="submit">
 </form>
+<h4>Contact Us!</h4>
+<?php
+// Define variables and set to empty values
+$name = $email = $message = "";
+$nameErr = $emailErr = $messageErr = "";
+$successMessage = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Validate name
+    if (empty($_POST["name"])) {
+        $nameErr = "Name is required";
+    } else {
+        $name = test_input($_POST["name"]);
+    }
+
+    // Validate email
+    if (empty($_POST["email"])) {
+        $emailErr = "Email is required";
+    } else {
+        $email = test_input($_POST["email"]);
+        // Check if email is valid
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $emailErr = "Invalid email format";
+        }
+    }
+
+    // Validate message
+    if (empty($_POST["message"])) {
+        $messageErr = "Message is required";
+    } else {
+        $message = test_input($_POST["message"]);
+    }
+
+    // If no errors, send email
+    if (empty($nameErr) && empty($emailErr) && empty($messageErr)) {
+        $to = "your_email@example.com";
+        $subject = "Contact Form Submission";
+        $body = "Name: $name\nEmail: $email\nMessage: $message";
+        $headers = "From: $email";
+
+        if (mail($to, $subject, $body, $headers)) {
+            $successMessage = "Your message has been sent successfully!";
+        } else {
+            $successMessage = "Oops! Something went wrong.";
+        }
+    }
+}
+
+// Function to sanitize input data
+function test_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+?>
+
+<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+    Name: <input type="text" name="name">
+    <span class="error">* <?php echo $nameErr;?></span>
+    <br><br>
+    Email: <input type="text" name="email">
+    <span class="error">* <?php echo $emailErr;?></span>
+    <br><br>
+    Message: <textarea name="message" rows="5" cols="40"></textarea>
+    <span class="error">* <?php echo $messageErr;?></span>
+    <br><br>
+    <input type="submit" name="submit" value="Submit">
+</form>
+
+<?php
+echo "<p class='success'>$successMessage</p>";
+?>
 </body>
 
 </html>
