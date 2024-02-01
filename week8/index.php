@@ -332,7 +332,13 @@
 </form>
 
 <?php
-// Check if form is submitted
+ echo "<p>Server Time: " . date("Y-m-d H:i:s") . "</p>";
+ 
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {        
+        $userMessage = $_POST["user_message"];        
+        echo "<p>Your Message: $userMessage</p>";    
+    }
+ 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check if name field is not empty
     if (!empty($_POST["name"])) {
