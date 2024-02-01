@@ -412,6 +412,7 @@ $valid_password = "password";
 	
 <h2>PHP Form Example</h2>
 
+
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
     Name: <input type="text" name="name">
     <input type="submit" name="submit" value="Submit">
@@ -469,8 +470,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["file"])) {
 
 <?php
 // Define variables and set to empty values
-$name = $email = $message = "";
-$nameErr = $emailErr = $messageErr = "";
+$name = $email = $message = $gender = "";
+$nameErr = $emailErr = $messageErr = $genderErr = "";
 $successMessage = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -499,11 +500,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $message = test_input($_POST["message"]);
     }
 
+    // Validate gender
+    if (empty($_POST["gender"])) {
+        $genderErr = "Gender is required";
+    } else {
+        $gender = test_input($_POST["gender"]);
+    }
+
     // If no errors, send email
-    if (empty($nameErr) && empty($emailErr) && empty($messageErr)) {
+    if (empty($nameErr) && empty($emailErr) && empty($messageErr) && empty($genderErr)) {
         $to = "your_email@example.com";
         $subject = "Contact Form Submission";
-        $body = "Name: $name\nEmail: $email\nMessage: $message";
+        $body = "Name: $name\nEmail: $email\nGender: $gender\nMessage: $message";
         $headers = "From: $email";
 
         if (mail($to, $subject, $body, $headers)) {
@@ -530,11 +538,19 @@ function test_input($data) {
     Email: <input type="text" name="email">
     <span class="error">* <?php echo $emailErr;?></span>
     <br><br>
+    Gender:
+    <input type="radio" name="gender" value="female">Female
+    <input type="radio" name="gender" value="male">Male
+    <input type="radio" name="gender" value="other">Other
+    <span class="error">* <?php echo $genderErr;?></span>
+    <br><br>
     Message: <textarea name="message" rows="5" cols="40"></textarea>
     <span class="error">* <?php echo $messageErr;?></span>
     <br><br>
     <input type="submit" name="submit" value="Submit">
 </form>
+
+
 </body>
 
 </html>
