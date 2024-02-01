@@ -466,7 +466,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["file"])) {
     <input type="submit" value="Upload Image" name="submit">
 </form>
 
-<h4>Contact Us!</h4>
+<h4>Contact Us! (Validation Form)</h4>
 
 <?php
 // Define variables and set to empty values
