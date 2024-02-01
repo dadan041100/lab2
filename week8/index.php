@@ -531,6 +531,7 @@ function test_input($data) {
 }
 ?>
 
+
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
     Name: <input type="text" name="name">
     <span class="error">* <?php echo $nameErr;?></span>
