@@ -1,9 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PHP Form Validation Example</title>
+</head>
+<body>
+
 <?php
 // Define variables and initialize with empty values
-$name = $email = $website = $gender = "";
-$name_err = $email_err = $website_err = $gender_err = "";
+$name = $email = $message = $gender = "";
+$name_err = $email_err = $message_err = $gender_err = "";
 
-// Check if the form is submitted
+// Function to sanitize input data
+function test_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+
+$servername = "localhost";
+$username = "webprogss221";
+$password = "=latHen97";
+$dbname = "webprogss221";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+
+// Processing form data when form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validate name
     if (empty($_POST["name"])) {
@@ -27,11 +54,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
     
-    // Validate website
-    if (empty($_POST["website"])) {
-        $website_err = "Please enter your website.";
+    // Validate message
+    if (empty($_POST["message"])) {
+        $message_err = "Please enter your message.";
     } else {
-        $website = test_input($_POST["website"]);
+        $message = test_input($_POST["message"]);
     }
 
     // Validate gender
@@ -41,62 +68,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $gender = test_input($_POST["gender"]);
     }
 
-    // If there are no errors, insert into database
-    if (empty($name_err) && empty($email_err) && empty($website_err) && empty($gender_err)) {
-        $servername = "localhost";
-        $username = "webprogss221";
-        $password = "=latHen97";
-        $dbname = "webprogss221";
+    // If there are no errors, insert data into database
+    if (empty($name_err) && empty($email_err) && empty($message_err) && empty($gender_err)) {
+        $sql = "INSERT INTO ddramolete_myguest (firstname, message, email, gender)
+        VALUES ('$name', '$message', '$email', '$gender')";
 
-        // Create connection
-        $conn = new mysqli($servername, $username, $password, $dbname);
-        // Check connection
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
-
-        // Prepare SQL statement
-        $sql = "INSERT INTO ddramolete_myguest (name, email, website, gender) VALUES ($name, $email, $website, $gender)";
-        $stmt = $conn->prepare($sql);
-
-        if ($stmt) {
-            // Bind parameters
-            $stmt->bind_param("ssss", $name, $website, $email, $gender);
-            
-            // Attempt to execute the prepared statement
-            if ($stmt->execute()) {
-                echo "<h2>Thank you for contacting us!</h2>";
-                echo "<p>We will get back to you as soon as possible.</p>";
-            } else {
-                echo "<h2>Form submission failed.</h2>";
-                echo "<p>Please try again later.</p>";
-            }
-
-            // Close statement
-            $stmt->close();
+        if ($conn->query($sql) === TRUE) {
+            echo "New record created successfully";
         } else {
-            echo "Error: Unable to prepare statement.";
+            echo "Error: " . $sql . "<br>" . $conn->error;
         }
-
-        $conn->close();
+    } else {
+        // If there are validation errors, display the form with user input
+        echo "<h2>Form submission failed.</h2>";
+        echo "<p>Please correct the errors and try again.</p>";
     }
 }
 
-// Function to sanitize input data
-function test_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-}
+$conn->close();
 ?>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>PHP Form Validation Example</title>
-</head>
-<body>
 
 <h2>PHP Form Validation Example</h2>
 <p><span class="error">* required field</span></p>
@@ -113,8 +103,8 @@ function test_input($data) {
     <input type="radio" name="gender" <?php if (isset($gender) && $gender=="other") echo "checked";?> value="other">Other
     <span class="error">* <?php echo $gender_err;?></span>
     <br><br>
-    Website: <textarea name="website" rows="5" cols="40"><?php echo $website;?></textarea>
-    <span class="error">* <?php echo $website_err;?></span>
+    Message: <textarea name="message" rows="5" cols="40"><?php echo $message;?></textarea>
+    <span class="error">* <?php echo $message_err;?></span>
     <br><br>
     <input type="submit" name="submit" value="Submit">
 </form>
