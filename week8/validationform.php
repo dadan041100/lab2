@@ -3,7 +3,7 @@
 $name = $email = $website = $gender = "";
 $name_err = $email_err = $website_err = $gender_err = "";
 
-// Processing form data when form is submitted
+// Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validate name
     if (empty($_POST["name"])) {
@@ -39,6 +39,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $gender_err = "Please select your gender.";
     } else {
         $gender = test_input($_POST["gender"]);
+    }
+
+    // If there are no errors, insert into database
+    if (empty($name_err) && empty($email_err) && empty($website_err) && empty($gender_err)) {
+        $servername = "localhost";
+        $username = "webprogss221";
+        $password = "=latHen97";
+        $dbname = "webprogss221";
+
+        // Create connection
+        $conn = new mysqli($servername, $username, $password, $dbname);
+        // Check connection
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+
+        // Prepare SQL statement
+        $sql = "INSERT INTO ddramolete_myguest (name, message, email, gender) VALUES (?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+
+        if ($stmt) {
+            // Bind parameters
+            $stmt->bind_param("ssss", $name, $website, $email, $gender);
+            
+            // Attempt to execute the prepared statement
+            if ($stmt->execute()) {
+                echo "<h2>Thank you for contacting us!</h2>";
+                echo "<p>We will get back to you as soon as possible.</p>";
+            } else {
+                echo "<h2>Form submission failed.</h2>";
+                echo "<p>Please try again later.</p>";
+            }
+
+            // Close statement
+            $stmt->close();
+        } else {
+            echo "Error: Unable to prepare statement.";
+        }
+
+        $conn->close();
     }
 }
 
@@ -78,50 +118,6 @@ function test_input($data) {
     <br><br>
     <input type="submit" name="submit" value="Submit">
 </form>
-
-<?php
-$servername = "localhost";
-$username = "webprogss221";
-$password = "=latHen97";
-$dbname = "webprogss221";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
-}
-
-// Processing form data when form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (empty($name_err) && empty($email_err) && empty($website_err) && empty($gender_err)) {
-        // Prepare SQL statement
-        $sql = "INSERT INTO ddramolete_myguest (name, website, email, gender) VALUES ($name, $website, $email, $gender)";
-        
-        // Prepare statement
-        $stmt = $conn->prepare($sql);
-		
-    if ($stmt) {
-    // Bind parameters
-	$stmt->bind_param("ssss", $name, $website, $email, $gender);
-    
-    // Attempt to execute the prepared statement
-    if ($stmt->execute()) {
-        echo "<h2>Thank you for contacting us!</h2>";
-        echo "<p>We will get back to you as soon as possible.</p>";
-    } else {
-        echo "<h2>Form submission failed.</h2>";
-        echo "<p>Please correct the errors and try again.</p>";
-    }
-
-    // Close statement
-    $stmt->close();
-} else {
-    echo "Error: Unable to prepare statement.";
-}
-
-$conn->close();
-?>
 
 </body>
 </html>
