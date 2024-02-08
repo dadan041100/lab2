@@ -7,8 +7,8 @@
 
 <?php
 // Define variables and initialize with empty values
-$name = $email = $message = $gender = "";
-$name_err = $email_err = $message_err = $gender_err = "";
+$name = $email = $website = $gender = "";
+$name_err = $email_err = $website_err = $gender_err = "";
 
 // Processing form data when form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -36,9 +36,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // Validate message
     if (empty($_POST["message"])) {
-        $message_err = "Please enter your message.";
+        $website_err = "Please enter your website.";
     } else {
-        $message = test_input($_POST["message"]);
+        $website = test_input($_POST["website"]);
     }
 
     // Validate gender
@@ -73,7 +73,7 @@ function test_input($data) {
     <input type="radio" name="gender" <?php if (isset($gender) && $gender=="other") echo "checked";?> value="other">Other
     <span class="error">* <?php echo $gender_err;?></span>
     <br><br>
-    Message: <textarea name="message" rows="5" cols="40"><?php echo $message;?></textarea>
+    Website: <textarea name="website" rows="5" cols="40"><?php echo $website;?></textarea>
     <span class="error">* <?php echo $message_err;?></span>
     <br><br>
     <input type="submit" name="submit" value="Submit">
@@ -107,12 +107,17 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+<<<<<<< HEAD
 // Processing form data when form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = test_input($_POST["name"]);
     $email = test_input($_POST["email"]);
     $message = test_input($_POST["message"]);
     $gender = test_input($_POST["gender"]);
+=======
+$sql = "INSERT INTO ddramolete_myguest (name, message, email, gender)
+VALUES ('$name', '$message', '$email', $gender)";
+>>>>>>> 51365b7398085f99f7e794c77b62ea35deac7b0e
 
     $sql = "INSERT INTO ddramolete_myguest (firstname, message, email, gender)
     VALUES (?, ?, ?, ?)";
