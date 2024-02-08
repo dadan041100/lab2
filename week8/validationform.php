@@ -95,7 +95,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <?php
-// For socit cloud
 $servername = "localhost";
 $username = "webprogss221";
 $password = "=latHen97";
@@ -105,19 +104,41 @@ $dbname = "webprogss221";
 $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
 if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
+    die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "INSERT INTO ddramolete_myguest (firstname, lastname, email)
-VALUES ('$name', '$message', '$email')";
+// Processing form data when form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = test_input($_POST["name"]);
+    $email = test_input($_POST["email"]);
+    $message = test_input($_POST["message"]);
+    $gender = test_input($_POST["gender"]);
 
-if ($conn->query($sql) === TRUE) {
-  echo "New record created successfully";
-} else {
-  echo "Error: " . $sql . "<br>" . $conn->error;
+    $sql = "INSERT INTO ddramolete_myguest (firstname, message, email, gender)
+    VALUES (?, ?, ?, ?)";
+
+    // Using prepared statements to prevent SQL injection
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssss", $name, $message, $email, $gender);
+
+    if ($stmt->execute()) {
+        echo "New record created successfully";
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+
+    $stmt->close();
 }
 
 $conn->close();
+
+// Function to sanitize input data
+function test_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
 ?>
 
 </body>
