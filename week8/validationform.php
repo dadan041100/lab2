@@ -56,7 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // Prepare SQL statement
-        $sql = "INSERT INTO ddramolete_myguest (name, message, email, gender) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO ddramolete_myguest (name, email, website, gender) VALUES ($name, $email, $website, $gender)";
         $stmt = $conn->prepare($sql);
 
         if ($stmt) {
