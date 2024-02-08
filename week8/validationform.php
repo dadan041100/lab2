@@ -100,28 +100,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         // Prepare statement
         $stmt = $conn->prepare($sql);
-        if ($stmt) {
-            // Bind parameters
-            $stmt->bind_param("ssss", $name, $website, $email, $gender);
-            
-            // Attempt to execute the prepared statement
-            if ($stmt->execute()) {
-                echo "<h2>Thank you for contacting us!</h2>";
-                echo "<p>We will get back to you as soon as possible.</p>";
-            } else {
-                echo "<h2>Form submission failed.</h2>";
-                echo "<p>Please correct the errors and try again.</p>";
-            }
-            
-            // Close statement
-            $stmt->close();
-        } else {
-            echo "Error: Unable to prepare statement.";
-        }
+		
+    if ($stmt) {
+    // Bind parameters
+		$stmt->bind_param("ssss", $name, $website, $email, $gender);
+    
+    // Attempt to execute the prepared statement
+    if ($stmt->execute()) {
+        echo "<h2>Thank you for contacting us!</h2>";
+        echo "<p>We will get back to you as soon as possible.</p>";
     } else {
         echo "<h2>Form submission failed.</h2>";
         echo "<p>Please correct the errors and try again.</p>";
     }
+
+    // Close statement
+    $stmt->close();
+} else {
+    echo "Error: Unable to prepare statement.";
 }
 
 $conn->close();
