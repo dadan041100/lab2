@@ -11,7 +11,7 @@ if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "SELECT id, firstname, lastname FROM MyGuests";
+$sql = "SELECT id, firstname, lastname FROM ddramolete_myguests";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
