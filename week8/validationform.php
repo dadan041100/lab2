@@ -103,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		
     if ($stmt) {
     // Bind parameters
-		$stmt->bind_param("ssss", $name, $website, $email, $gender);
+	$stmt->bind_param("ssss", $name, $website, $email, $gender);
     
     // Attempt to execute the prepared statement
     if ($stmt->execute()) {
