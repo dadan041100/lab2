@@ -107,8 +107,8 @@ if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "INSERT INTO ddramolete_myguest (firstname, lastname, email)
-VALUES ('$name', '$message', '$email')";
+$sql = "INSERT INTO ddramolete_myguest (firstname, message, email, gender)
+VALUES ('$name', '$message', '$email', $gender)";
 
 if ($conn->query($sql) === TRUE) {
   echo "New record created successfully";
