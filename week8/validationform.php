@@ -96,7 +96,7 @@ if ($conn->connect_error) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($name_err) && empty($email_err) && empty($website_err) && empty($gender_err)) {
         // Prepare SQL statement
-        $sql = "INSERT INTO ddramolete_myguest (name, message, email, gender) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO ddramolete_myguest (name, website, email, gender) VALUES ($name, $website, $email, $gender)";
         
         // Prepare statement
         $stmt = $conn->prepare($sql);
