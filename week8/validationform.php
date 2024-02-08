@@ -95,10 +95,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <?php
+// For socit cloud
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "myDB";
+$username = "webprogss221";
+$password = "=latHen97";
+$dbname = "webprogss221";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -107,7 +108,7 @@ if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "INSERT INTO MyGuests (firstname, lastname, email)
+$sql = "INSERT INTO ddramolete_myguest (firstname, lastname, email)
 VALUES ('$name', '$message', '$email')";
 
 if ($conn->query($sql) === TRUE) {
