@@ -1,10 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>PHP Form Validation Example</title>
-</head>
-<body>
-
 <?php
 // Define variables and initialize with empty values
 $name = $email = $website = $gender = "";
@@ -34,8 +27,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
     
-    // Validate message
-    if (empty($_POST["message"])) {
+    // Validate website
+    if (empty($_POST["website"])) {
         $website_err = "Please enter your website.";
     } else {
         $website = test_input($_POST["website"]);
@@ -58,6 +51,13 @@ function test_input($data) {
 }
 ?>
 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PHP Form Validation Example</title>
+</head>
+<body>
+
 <h2>PHP Form Validation Example</h2>
 <p><span class="error">* required field</span></p>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
@@ -74,25 +74,10 @@ function test_input($data) {
     <span class="error">* <?php echo $gender_err;?></span>
     <br><br>
     Website: <textarea name="website" rows="5" cols="40"><?php echo $website;?></textarea>
-    <span class="error">* <?php echo $message_err;?></span>
+    <span class="error">* <?php echo $website_err;?></span>
     <br><br>
     <input type="submit" name="submit" value="Submit">
 </form>
-
-<?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (empty($name_err) && empty($email_err) && empty($message_err) && empty($gender_err)) {
-        // Here you can perform any action with the validated data, such as sending an email
-        echo "<h2>Thank you for contacting us!</h2>";
-        echo "<p>We will get back to you as soon as possible.</p>";
-    } else {
-        // If there are validation errors, display the form with user input
-        echo "<h2>Form submission failed.</h2>";
-        echo "<p>Please correct the errors and try again.</p>";
-    }
-}
-
-?>
 
 <?php
 $servername = "localhost";
@@ -104,46 +89,42 @@ $dbname = "webprogss221";
 $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+  die("Connection failed: " . $conn->connect_error);
 }
 
-<<<<<<< HEAD
 // Processing form data when form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = test_input($_POST["name"]);
-    $email = test_input($_POST["email"]);
-    $message = test_input($_POST["message"]);
-    $gender = test_input($_POST["gender"]);
-=======
-$sql = "INSERT INTO ddramolete_myguest (name, message, email, gender)
-VALUES ('$name', '$message', '$email', $gender)";
->>>>>>> 51365b7398085f99f7e794c77b62ea35deac7b0e
-
-    $sql = "INSERT INTO ddramolete_myguest (firstname, message, email, gender)
-    VALUES (?, ?, ?, ?)";
-
-    // Using prepared statements to prevent SQL injection
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssss", $name, $message, $email, $gender);
-
-    if ($stmt->execute()) {
-        echo "New record created successfully";
+    if (empty($name_err) && empty($email_err) && empty($website_err) && empty($gender_err)) {
+        // Prepare SQL statement
+        $sql = "INSERT INTO ddramolete_myguest (name, message, email, gender) VALUES (?, ?, ?, ?)";
+        
+        // Prepare statement
+        $stmt = $conn->prepare($sql);
+        if ($stmt) {
+            // Bind parameters
+            $stmt->bind_param("ssss", $name, $website, $email, $gender);
+            
+            // Attempt to execute the prepared statement
+            if ($stmt->execute()) {
+                echo "<h2>Thank you for contacting us!</h2>";
+                echo "<p>We will get back to you as soon as possible.</p>";
+            } else {
+                echo "<h2>Form submission failed.</h2>";
+                echo "<p>Please correct the errors and try again.</p>";
+            }
+            
+            // Close statement
+            $stmt->close();
+        } else {
+            echo "Error: Unable to prepare statement.";
+        }
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        echo "<h2>Form submission failed.</h2>";
+        echo "<p>Please correct the errors and try again.</p>";
     }
-
-    $stmt->close();
 }
 
 $conn->close();
-
-// Function to sanitize input data
-function test_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-}
 ?>
 
 </body>
